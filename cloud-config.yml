@@ -1,29 +1,5 @@
 #cloud-config
 
-coreos:
-  units:
-    - name: docker.service
-      command: start
-    - name: apply-tc-rules.service
-      content: |
-        [Unit]
-        Description=Updates tc traffic shaping rules in the script-exporter container.
-
-        [Service]
-        Type=oneshot
-        ExecStart=/bin/docker exec script-exporter bash -c 'git -C /opt/mlab/operator pull && /bin/apply_tc_rules.sh'
-    - name: apply-tc-rules.timer
-      command: "start"
-      content: |
-        [Unit]
-        Description=Run apply-tc-rules.service daily.
-
-        [Timer]
-        OnCalendar=daily
-
-        [Install]
-        WantedBy=multi-user.target
-
 write_files:
   - path: /etc/ssh/sshd_config
     permissions: 0600
@@ -39,4 +15,3 @@ write_files:
       PasswordAuthentication no
       ChallengeResponseAuthentication no
       PermitRootLogin no
-
